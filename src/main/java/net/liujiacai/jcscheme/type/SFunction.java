@@ -1,8 +1,8 @@
-package net.liujiacai.myscheme.type;
+package net.liujiacai.jcscheme.type;
 
 import java.util.List;
 
-import net.liujiacai.myscheme.SExpression;
+import net.liujiacai.jcscheme.SExpression;
 
 public class SFunction extends SObject{
 

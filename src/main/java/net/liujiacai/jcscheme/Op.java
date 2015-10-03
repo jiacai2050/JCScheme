@@ -1,8 +1,8 @@
-package net.liujiacai.myscheme;
+package net.liujiacai.jcscheme;
 
-import net.liujiacai.myscheme.type.SBool;
-import net.liujiacai.myscheme.type.SNumber;
-import net.liujiacai.myscheme.type.SObject;
+import net.liujiacai.jcscheme.type.SBool;
+import net.liujiacai.jcscheme.type.SNumber;
+import net.liujiacai.jcscheme.type.SObject;
 
 public class Op {
 	// internal methods

@@ -1,4 +1,4 @@
-package net.liujiacai.myscheme.type;
+package net.liujiacai.jcscheme.type;
 
 
 public class SNumber extends SObject{

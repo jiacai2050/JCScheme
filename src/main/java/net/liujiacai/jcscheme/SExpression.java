@@ -1,13 +1,13 @@
-package net.liujiacai.myscheme;
+package net.liujiacai.jcscheme;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import net.liujiacai.myscheme.type.SBool;
-import net.liujiacai.myscheme.type.SFunction;
-import net.liujiacai.myscheme.type.SNumber;
-import net.liujiacai.myscheme.type.SObject;
-import net.liujiacai.myscheme.type.SScope;
+import net.liujiacai.jcscheme.type.SBool;
+import net.liujiacai.jcscheme.type.SFunction;
+import net.liujiacai.jcscheme.type.SNumber;
+import net.liujiacai.jcscheme.type.SObject;
+import net.liujiacai.jcscheme.type.SScope;
 
 public class SExpression {
 	private String value;
@@ -146,19 +146,14 @@ public class SExpression {
 
 	@Override
 	public String toString() {
-		try {
-			if (0 == children.size()) {
-				return value;
-			} else {
-				StringBuffer displayBuffer = new StringBuffer(value + " ");
-				for (SExpression child : children) {
-					displayBuffer.append(child.toString() + " ");
-				}
-				return displayBuffer.toString();
+		if (0 == children.size()) {
+			return value;
+		} else {
+			StringBuffer displayBuffer = new StringBuffer(value + " ");
+			for (SExpression child : children) {
+				displayBuffer.append(child.toString() + " ");
 			}
-		} catch (Throwable e) {
-			e.printStackTrace();
+			return displayBuffer.toString();
 		}
-		return null;
 	}
 }

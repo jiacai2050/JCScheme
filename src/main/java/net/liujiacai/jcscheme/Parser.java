@@ -1,4 +1,4 @@
-package net.liujiacai.myscheme;
+package net.liujiacai.jcscheme;
 
 public class Parser {
 	public static String[] tokenize(String src) {

@@ -1,4 +1,4 @@
-package net.liujiacai.myscheme;
+package net.liujiacai.jcscheme;
 
 import java.io.BufferedReader;
 import java.io.IOException;

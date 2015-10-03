@@ -1,4 +1,4 @@
-package net.liujiacai.myscheme.type;
+package net.liujiacai.jcscheme.type;
 
 public class SBool extends SObject{
 	private boolean value;
@@ -15,6 +15,4 @@ public class SBool extends SObject{
 	public String toString() {
 		return String.valueOf(value);
 	}
-
-	
 }
