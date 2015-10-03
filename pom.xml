@@ -32,7 +32,7 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>net.liujiacai.myscheme.Main</mainClass>
+							<mainClass>net.liujiacai.jcscheme.Main</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
