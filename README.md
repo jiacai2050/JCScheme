@@ -1,6 +1,6 @@
 ## JCScheme
 
-学习编程这么多年来，重要有了我自己的 Scheme 方言
+学习编程这么多年来，终于有了我自己的 Scheme 方言
 
 ```
 JCScheme = Jiacai Scheme 😊
@@ -9,7 +9,7 @@ JCScheme = Jiacai Scheme 😊
 
 ## 运行
 
-clone 本项目后直接`mvn clean package`即可，生成jar包。
+clone 本项目后直接`mvn clean package`即可生成jar包。
 
 由于本项目的重点是实现解释器部分，所以 REPL 做的有些搓，方向键不能使用，Linux/Mac 用户可以安装`rlwrap`解决。下面命令参考：
 ```
@@ -22,9 +22,23 @@ brew install rlwrap  # for Homebrew
 port install rlwrap  # for MacPorts
 ```
 
-然后就可以运行 JCScheme 了
+然后就可以运行 JCScheme 了，目前支持整型、布尔型、函数三种类型，支持`if`与`def`关键字。
 ```
 rlwrap java -jar target/JCScheme-*.jar
+>> (* 2 3 4 5)
+120
+>> (def a 4)
+null
+>> (def b 5)
+null
+>> (if (> a b) a b)
+5
+>> (def max (lambda (a b) (if (> a b) a b)))
+null
+>> (def c (max a b))
+null
+>> c
+5
 ```
 ## 说明
 
