@@ -19,7 +19,7 @@ public class Main {
 				future.cancel(true);
 				String[] byebye = {
 						"Thanks for your tryout!",
-						"You can find details about MyScheme at http://github.com/jiacai2050/JCScheme",
+						"Find more about JCScheme at http://github.com/jiacai2050/JCScheme",
 						"Have Fun, Bye Bye... " };
 				System.out.println();
 				System.out.println();

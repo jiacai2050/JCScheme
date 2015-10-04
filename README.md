@@ -3,7 +3,7 @@
 学习编程这么多年来，终于有了我自己的 Scheme 方言
 
 ```
-JCScheme = Jiacai Scheme 😊
+JCScheme = Jiacai's Scheme 😊
 ```
 
 
@@ -22,7 +22,8 @@ brew install rlwrap  # for Homebrew
 port install rlwrap  # for MacPorts
 ```
 
-然后就可以运行 JCScheme 了，目前支持整型、布尔型、函数三种类型，支持`if`与`def`关键字。
+然后就可以运行 JCScheme 了。
+目前支持整型、布尔型、函数三种类型，支持`if`、`def`与`lambda`关键字，更多功能参考 [ChangeLog](#ChangeLog)。
 ```
 rlwrap java -jar target/JCScheme-*.jar
 >> (* 2 3 4 5)
@@ -46,7 +47,15 @@ JCScheme 的解释可以参考我的博文[我的第一个玩具语言 JCScheme 
 
 如果你有什么好的想法或建议，欢迎 PR。
 
-## 版本 
+## <a name="ChangeLog"/>ChangeLog
 
-- 0.0.1-SNAPSHAT, 2015/10/03
-
+- 0.0.1-SNAPSHAT，2015/10/03
+- 0.0.2-SNAPSHAT，2015/10/04，增加匿名函数调用
+```
+>> ((lambda (a b) (if (> a b) a b)) 3 4)
+4
+>> (lambda (a b) (if (> a b) a b))
+Function :
+	Args : [a, b]
+	Body : ( if ( > a b )  a b )
+```

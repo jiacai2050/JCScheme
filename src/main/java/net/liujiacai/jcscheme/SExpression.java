@@ -7,7 +7,6 @@ import net.liujiacai.jcscheme.type.SBool;
 import net.liujiacai.jcscheme.type.SFunction;
 import net.liujiacai.jcscheme.type.SNumber;
 import net.liujiacai.jcscheme.type.SObject;
-import net.liujiacai.jcscheme.type.SScope;
 
 public class SExpression {
 	private String value;
@@ -40,14 +39,14 @@ public class SExpression {
 		int length = children.size();
 		if (length == 0) {
 			/**
-			 * 在进行符号求值时，按照下面步骤： 1. 是否为数字，否则 2. 是否在全局环境中 3. 是否为true false 4. 报错
+			 * 在进行符号求值时，按照下面步骤： 1. 是否为数字 2. 是否为true false 3. 是否在全局环境中 4. 报错
 			 */
 			if (this.value.matches("\\d+")) {
 				return new SNumber(Integer.valueOf(this.value));
-			} else if (SScope.env.containsKey(this.value)) {
-				return SScope.env.get(this.value);
 			} else if (this.value.equals("true") || this.value.equals("false")) {
 				return new SBool(Boolean.valueOf(this.value));
+			} else if (SScope.env.containsKey(this.value)) {
+				return SScope.env.get(this.value);
 			} else {
 				System.err.println("Error token: " + this.value);
 				return null;
@@ -56,52 +55,13 @@ public class SExpression {
 			return children.get(0).eval();
 		} else {
 			String op = children.get(0).getValue();
-			// 处理语言内置操作符
-			switch (op) {
-			case Op.DEF:
-				String key = children.get(1).value;
-				String unknownVal = children.get(2).value;
-				if (unknownVal.startsWith(Constants.START_TOKEN)) {
-					List<SExpression> funcExps = children.get(2).getChildren();
-					// 是否为函数定义
-					if ("lambda".equals(funcExps.get(0).value)) {
-						SExpression funcArgsExp = funcExps.get(1);
-						SExpression funcBodyExp = funcExps.get(2);
-
-						List<SExpression> args = funcArgsExp.getChildren();
-						// SExpression 最后一个为右括号，忽略
-						args = args.subList(0, args.size() - 1);
-						List<String> params = new ArrayList<>();
-						for (SExpression e : args) {
-							params.add(e.value);
-						}
-						SFunction func = new SFunction(params, funcBodyExp);
-						SScope.env.put(key, func);
-						return null;
-					} else {
-						SScope.env.put(key, children.get(2).eval());
-						return null;
-					}
-				} else {
-					SNumber val = new SNumber(Integer.valueOf(unknownVal));
-					SScope.env.put(key, val);
-					return null;
-				}
-			case Op.IF:
-				SBool condition = (SBool) children.get(1).eval();
-				SExpression trueClause = children.get(2);
-				if (condition.getValue()) {
-					return trueClause.eval();
-				} else {
-					if (children.size() == 5) {
-						SExpression falseClause = children.get(3);
-						return falseClause.eval();
-					} else {
-						return null;
-					}
-				}
+			// 1. 处理语言内置关键字
+			if (SScope.builtinKeywords.containsKey(op)) {
+				String kwProcessor = SScope.builtinKeywords.get(op);
+				return Util.builtinKeywordExecutor(kwProcessor, children);
 			}
-			// children 第一个为操作符， 最后一个为右括号 )
+			// 2. 处理语言内置函数
+			// children 第一个为操作符， 最后一个为右括号 )，所以需要去掉
 			List<SExpression> expParams = children.subList(1, length - 1);
 			List<SObject> objParams = new ArrayList<>();
 			for (SExpression param : expParams) {
@@ -109,36 +69,25 @@ public class SExpression {
 			}
 			SObject[] param = objParams.toArray(new SObject[length - 2]);
 			SObject ret = null;
-			switch (op) {
-			case Op.ADD:
-				ret = Op.add(param);
-				break;
-			case Op.SUB:
-				ret = Op.sub(param);
-				break;
-			case Op.MUL:
-				ret = Op.mul(param);
-				break;
-			case Op.DIV:
-				ret = Op.div(param);
-				break;
-			case Op.GT:
-				ret = Op.greatThan(param);
-				break;
-			case Op.LT:
-				ret = Op.lessThan(param);
-				break;
-			case Op.EQ:
-				ret = Op.equal(param);
-				break;
-			default:
-				// 用户自定义函数
+			if (SScope.builtinFuncs.containsKey(op)) {
+				String func = SScope.builtinFuncs.get(op);
+				return Util.builtinFuncExecutor(func, param);
+			} else if (Constants.START_TOKEN.equals(op)) {
+				// 3. 处理匿名函数调用
+				List<SExpression> anonymousFuncExps = children.get(0).getChildren();
+				if (Constants.LAMBDA.equals(anonymousFuncExps.get(0).getValue())) {
+					SFunction func = (SFunction) SKeyword.lambdaProcessor(anonymousFuncExps);
+					return func.apply(param);
+				} else {
+					return null;
+				}
+			} else {
+				// 4. 处理用户自定义函数
 				if (SScope.env.containsKey(op)) {
 					ret = ((SFunction) SScope.env.get(op)).apply(param);
 				} else {
 					System.out.println("Unsupported Operator: " + op);
 				}
-				break;
 			}
 			return ret;
 		}

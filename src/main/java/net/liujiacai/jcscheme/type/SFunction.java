@@ -1,8 +1,10 @@
 package net.liujiacai.jcscheme.type;
 
+import java.util.Arrays;
 import java.util.List;
 
 import net.liujiacai.jcscheme.SExpression;
+import net.liujiacai.jcscheme.SScope;
 
 public class SFunction extends SObject{
 
@@ -25,12 +27,9 @@ public class SFunction extends SObject{
 	}
 	@Override
 	public String toString() {
-		StringBuffer buffer = new StringBuffer("Function : args [");
-		for(String p : param) {
-			buffer.append(p + ", ");
-		}
-		buffer.append("]\n");
-		buffer.append("Body :\n");
+		StringBuffer buffer = new StringBuffer("Function :\n\tArgs : ");
+		buffer.append(Arrays.toString(param.toArray(new String[param.size()])));
+		buffer.append("\n\tBody : ");
 		buffer.append(body.toString());
 		return buffer.toString();
 	}
