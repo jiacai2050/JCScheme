@@ -20,17 +20,17 @@ public class SList extends SObject {
 		return pairs.getFirst();
 	}
 
-	public SList rest() {
+	public SObject rest() {
 		if (SNil.getInstance().equals(this)) {
 			System.err
 					.println("The empty list passed as the first argument to cdr, is not correct");
 			return null;
 		}
-		SObject sec = pairs.getSecond();
-		if (sec instanceof SNil) {
+		SPair pair = (SPair) pairs.getSecond();
+		if (pair.getFirst() == null && pair.getSecond() == null) {
 			return SNil.getInstance();
 		} else {
-			return new SList((SPair) sec);
+			return new SList(pair);
 		}
 
 	}
@@ -55,10 +55,9 @@ public class SList extends SObject {
 		}
 
 		SObject obj = pairs.getSecond();
-		System.out.println(obj);
 		while (obj instanceof SPair) {
 			SPair pair = (SPair) obj;
-			// 当 pairs = nil时，pair的first、second都为null，应停止遍历
+			// 当 pair 的first、second都为null，说明已经到了最后一个节点
 			if (pair.getFirst() == null && pair.getSecond() == null) {
 				break;
 			}

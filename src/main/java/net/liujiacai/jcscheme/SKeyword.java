@@ -7,7 +7,6 @@ import net.liujiacai.jcscheme.type.SBool;
 import net.liujiacai.jcscheme.type.SFunction;
 import net.liujiacai.jcscheme.type.SList;
 import net.liujiacai.jcscheme.type.SNil;
-import net.liujiacai.jcscheme.type.SNumber;
 import net.liujiacai.jcscheme.type.SObject;
 import net.liujiacai.jcscheme.type.SPair;
 
@@ -34,29 +33,7 @@ public class SKeyword {
 	public static SObject defProcessor(List<SExpression> children) {
 		// def 关键字默认返回 null
 		String key = children.get(1).getValue();
-		String unknownVal = children.get(2).getValue();
-		if (unknownVal.startsWith(Constants.START_TOKEN)) {
-			List<SExpression> valExps = children.get(2).getChildren();
-
-			switch (valExps.get(0).getValue()) {
-			// 是否为函数定义
-			case Constants.LAMBDA:
-				SFunction func = (SFunction) lambdaProcessor(valExps);
-				SScope.env.put(key, func);
-				break;
-			// 是否为pair定义
-			case Constants.CONS:
-				SPair pair = (SPair) consProcessor(valExps);
-				SScope.env.put(key, pair);
-				break;
-			default:
-				SScope.env.put(key, children.get(2).eval());
-				break;
-			}
-		} else {
-			SNumber val = new SNumber(Integer.valueOf(unknownVal));
-			SScope.env.put(key, val);
-		}
+		SScope.env.put(key, children.get(2).eval());
 		return null;
 	}
 
@@ -86,7 +63,7 @@ public class SKeyword {
 		} else {
 			return new SPair(fir, sec);
 		}
-		
+
 	}
 
 	public static SObject listProcessor(List<SExpression> children) {
@@ -95,7 +72,8 @@ public class SKeyword {
 		if (tuples.size() == 0) {
 			return SNil.getInstance();
 		} else {
-			SPair last = new SPair(tuples.get(tuples.size() - 1).eval(), SNil.getInstance().getPairs());
+			SPair last = new SPair(tuples.get(tuples.size() - 1).eval(), SNil
+					.getInstance().getPairs());
 			for (int i = tuples.size() - 2; i >= 0; i--) {
 				SObject first = tuples.get(i).eval();
 				last = new SPair(first, last);
