@@ -5,8 +5,11 @@ import java.util.List;
 
 import net.liujiacai.jcscheme.type.SBool;
 import net.liujiacai.jcscheme.type.SFunction;
+import net.liujiacai.jcscheme.type.SList;
+import net.liujiacai.jcscheme.type.SNil;
 import net.liujiacai.jcscheme.type.SNumber;
 import net.liujiacai.jcscheme.type.SObject;
+import net.liujiacai.jcscheme.type.SPair;
 
 public class SKeyword {
 	/**
@@ -33,13 +36,22 @@ public class SKeyword {
 		String key = children.get(1).getValue();
 		String unknownVal = children.get(2).getValue();
 		if (unknownVal.startsWith(Constants.START_TOKEN)) {
-			List<SExpression> funcExps = children.get(2).getChildren();
+			List<SExpression> valExps = children.get(2).getChildren();
+
+			switch (valExps.get(0).getValue()) {
 			// 是否为函数定义
-			if (Constants.LAMBDA.equals(funcExps.get(0).getValue())) {
-				SFunction func = (SFunction) lambdaProcessor(funcExps);
+			case Constants.LAMBDA:
+				SFunction func = (SFunction) lambdaProcessor(valExps);
 				SScope.env.put(key, func);
-			} else {
+				break;
+			// 是否为pair定义
+			case Constants.CONS:
+				SPair pair = (SPair) consProcessor(valExps);
+				SScope.env.put(key, pair);
+				break;
+			default:
 				SScope.env.put(key, children.get(2).eval());
+				break;
 			}
 		} else {
 			SNumber val = new SNumber(Integer.valueOf(unknownVal));
@@ -62,5 +74,34 @@ public class SKeyword {
 		}
 		SFunction func = new SFunction(params, funcBodyExp);
 		return func;
+	}
+
+	public static SObject consProcessor(List<SExpression> children) {
+		SObject fir = children.get(1).eval();
+		SObject sec = children.get(2).eval();
+		if (sec instanceof SList) {
+			SList list = (SList) sec;
+			SPair rest = list.getPairs();
+			return new SList(new SPair(fir, rest));
+		} else {
+			return new SPair(fir, sec);
+		}
+		
+	}
+
+	public static SObject listProcessor(List<SExpression> children) {
+		List<SExpression> tuples = children.subList(1, children.size() - 1);
+		// 空表
+		if (tuples.size() == 0) {
+			return SNil.getInstance();
+		} else {
+			SPair last = new SPair(tuples.get(tuples.size() - 1).eval(), SNil.getInstance().getPairs());
+			for (int i = tuples.size() - 2; i >= 0; i--) {
+				SObject first = tuples.get(i).eval();
+				last = new SPair(first, last);
+			}
+			return new SList(last);
+		}
+
 	}
 }

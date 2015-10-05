@@ -59,3 +59,30 @@ Function :
 	Args : [a, b]
 	Body : ( if ( > a b )  a b )
 ```
+- 0.0.3-SNAPSHAT，2015/10/05，增加序对(pair)、表(list)类型；增加`cons`、`list`关键字；增加`car`、`cdr`、`empty?`内置函数；增加`nil`字面量，用以表示空表
+```
+>> (cons 1 2)
+[1, 2]
+>> (car (cons 1 2))
+1
+>> (cdr (cons 1 2))
+2
+>> (list) # 与字面量 nil 等价
+nil   
+>> (list 1 2)
+(1, 2)
+>> (car (list 1 2))
+1
+>> (cdr (list 1 2)) # 注意与 (cdr (cons 1 2)) 的区别
+(2)
+>> (empty? (cdr (list 1 2)))
+false
+>> (empty? (cdr (cdr (list 1 2))))
+true
+>> (empty? nil)
+true
+>> (cons 1 nil)
+(1)
+>> (list 1)  # 与 (cons 1 nil) 等价
+(1)
+```

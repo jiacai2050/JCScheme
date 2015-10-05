@@ -27,6 +27,12 @@ public class SScope {
 				"net.liujiacai.jcscheme.type.SBool.lessThan");
 		builtinFuncs.put(Constants.EQ,
 				"net.liujiacai.jcscheme.type.SBool.equalTo");
+		builtinFuncs.put(Constants.empty,
+				"net.liujiacai.jcscheme.type.SList.isEmpty");
+		builtinFuncs.put(Constants.CAR,
+				"net.liujiacai.jcscheme.type.SPair.car");
+		builtinFuncs.put(Constants.CDR,
+				"net.liujiacai.jcscheme.type.SPair.cdr");
 
 		builtinKeywords.put(Constants.IF,
 				"net.liujiacai.jcscheme.SKeyword.ifProcessor");
@@ -34,5 +40,9 @@ public class SScope {
 				"net.liujiacai.jcscheme.SKeyword.defProcessor");
 		builtinKeywords.put(Constants.LAMBDA,
 				"net.liujiacai.jcscheme.SKeyword.lambdaProcessor");
+		builtinKeywords.put(Constants.CONS,
+				"net.liujiacai.jcscheme.SKeyword.consProcessor");
+		builtinKeywords.put(Constants.LIST,
+				"net.liujiacai.jcscheme.SKeyword.listProcessor");
 	}
 }

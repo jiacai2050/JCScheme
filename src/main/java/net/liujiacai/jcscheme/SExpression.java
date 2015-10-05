@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.liujiacai.jcscheme.type.SBool;
 import net.liujiacai.jcscheme.type.SFunction;
+import net.liujiacai.jcscheme.type.SNil;
 import net.liujiacai.jcscheme.type.SNumber;
 import net.liujiacai.jcscheme.type.SObject;
 
@@ -39,13 +40,21 @@ public class SExpression {
 		int length = children.size();
 		if (length == 0) {
 			/**
-			 * 在进行符号求值时，按照下面步骤： 1. 是否为数字 2. 是否为true false 3. 是否在全局环境中 4. 报错
+			 * 在进行符号求值时，按照下面步骤： 
+			 *  1. 是否为数字 
+			 *  2. 是否为true false
+			 *  3. 是否为 NIL 
+			 *  4. 是否在全局环境中 
+			 *  5. 报错
 			 */
 			if (this.value.matches("\\d+")) {
 				return new SNumber(Integer.valueOf(this.value));
-			} else if (this.value.equals("true") || this.value.equals("false")) {
+			} else if (this.value.equals(Constants.TRUE) || this.value.equals(Constants.FALSE)) {
 				return new SBool(Boolean.valueOf(this.value));
-			} else if (SScope.env.containsKey(this.value)) {
+			} else if (this.value.equals(Constants.NIL)) {
+				return SNil.getInstance();
+			} 
+			else if (SScope.env.containsKey(this.value)) {
 				return SScope.env.get(this.value);
 			} else {
 				System.err.println("Error token: " + this.value);
@@ -74,9 +83,12 @@ public class SExpression {
 				return Util.builtinFuncExecutor(func, param);
 			} else if (Constants.START_TOKEN.equals(op)) {
 				// 3. 处理匿名函数调用
-				List<SExpression> anonymousFuncExps = children.get(0).getChildren();
-				if (Constants.LAMBDA.equals(anonymousFuncExps.get(0).getValue())) {
-					SFunction func = (SFunction) SKeyword.lambdaProcessor(anonymousFuncExps);
+				List<SExpression> anonymousFuncExps = children.get(0)
+						.getChildren();
+				if (Constants.LAMBDA
+						.equals(anonymousFuncExps.get(0).getValue())) {
+					SFunction func = (SFunction) SKeyword
+							.lambdaProcessor(anonymousFuncExps);
 					return func.apply(param);
 				} else {
 					return null;

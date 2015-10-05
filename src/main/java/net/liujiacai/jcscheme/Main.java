@@ -32,16 +32,16 @@ public class Main {
 }
 
 class ReadPrintLoop implements Runnable {
-	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
 
 	public void run() {
-		String input = null;
+		String src = null;
 		while (true) {
 			System.out.print(">> ");
 			try {
-				input = br.readLine();
-				if (!"".equals(input.trim())) {
-					String[] tokens = Parser.tokenize(input);
+				src = console.readLine();
+				if (!"".equals(src.trim())) {
+					String[] tokens = Parser.tokenize(src);
 					SExpression program = Parser.parse(tokens);
 					// Parser.prettyPrint(program);
 					System.out.println(program.eval());
