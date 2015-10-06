@@ -40,12 +40,12 @@ public class SExpression {
 		int length = children.size();
 		if (length == 0) {
 			/**
-			 * 在进行符号求值时，按照下面步骤： 
-			 *  1. 是否为数字 
-			 *  2. 是否为true false
-			 *  3. 是否为 NIL 
-			 *  4. 是否在全局环境中 
-			 *  5. 报错
+			 * step for eval a literal 
+			 *  1. is number ?
+			 *  2. is true or false ?
+			 *  3. is NIL ?
+			 *  4. is in current scope ? 
+			 *  5. print error
 			 */
 			if (this.value.matches("\\d+")) {
 				return new SNumber(Integer.valueOf(this.value));
@@ -53,58 +53,68 @@ public class SExpression {
 				return new SBool(Boolean.valueOf(this.value));
 			} else if (this.value.equals(Constants.NIL)) {
 				return SNil.getInstance();
-			} 
-			else if (SScope.env.containsKey(this.value)) {
-				return SScope.env.get(this.value);
 			} else {
-				System.err.println("Error token: " + this.value);
-				return null;
+				SObject obj = SScope.current.findVariable(this.value);
+				if(null != obj ) {
+					return obj;
+				} else {
+					System.err.println("Error token: " + this.value);
+					return null;
+				}
 			}
 		} else if (length == 1) {
 			return children.get(0).eval();
 		} else {
 			String op = children.get(0).getValue();
-			// 1. 处理语言内置关键字
+			// 1. process builtin keywords
 			if (SScope.builtinKeywords.containsKey(op)) {
 				String kwProcessor = SScope.builtinKeywords.get(op);
 				return Util.builtinKeywordExecutor(kwProcessor, children);
 			}
-			// 2. 处理语言内置函数
-			// children 第一个为操作符， 最后一个为右括号 )，所以需要去掉
-			List<SExpression> expParams = children.subList(1, length - 1);
-			List<SObject> objParams = new ArrayList<>();
-			for (SExpression param : expParams) {
-				objParams.add(param.eval());
+			// 2. process functions
+			List<SExpression> argsExps = children.subList(1, length - 1);
+			SObject[] argsSObjs = new SObject[length - 2];
+			int argsIndex = 0; 
+			for (SExpression exp : argsExps) {
+				argsSObjs[argsIndex ++] = exp.eval();
 			}
-			SObject[] param = objParams.toArray(new SObject[length - 2]);
 			SObject ret = null;
+			// 2.1 process builtin functions
 			if (SScope.builtinFuncs.containsKey(op)) {
 				String func = SScope.builtinFuncs.get(op);
-				return Util.builtinFuncExecutor(func, param);
+				return Util.builtinFuncExecutor(func, argsSObjs);
 			} else if (Constants.START_TOKEN.equals(op)) {
-				// 3. 处理匿名函数调用
-				List<SExpression> anonymousFuncExps = children.get(0)
-						.getChildren();
-				if (Constants.LAMBDA
-						.equals(anonymousFuncExps.get(0).getValue())) {
-					SFunction func = (SFunction) SKeyword
-							.lambdaProcessor(anonymousFuncExps);
-					return func.apply(param);
-				} else {
-					return null;
-				}
+				// 2.2 process anonymous functions
+				return callAnonymousFun(argsSObjs);
 			} else {
-				// 4. 处理用户自定义函数
-				if (SScope.env.containsKey(op)) {
-					ret = ((SFunction) SScope.env.get(op)).apply(param);
+				// 2.3 process user-defined functions
+				SFunction func = (SFunction)SScope.current.findVariable(op);
+				if(null != func) {
+					ret = func.apply(argsSObjs);
 				} else {
-					System.out.println("Unsupported Operator: " + op);
+					System.err.println("Unsupported Operator: " + op);
 				}
 			}
 			return ret;
 		}
 	}
-
+	private SObject callAnonymousFun(SObject[] param) {
+		/**
+		 * There are 2 cases:
+		 * 1. immediately-invoked function: 
+		 *      ((lambda (x) x) 2)  ==> return 2
+		 * 2. currying:
+		 * 	    (def adder (lambda(x y) (+ x y)))
+		 *      ((adder 2) 3)        ==> return 5 		 
+		 */
+		SObject unknownObj = children.get(0).eval();
+		if (unknownObj instanceof SFunction) {
+			SFunction func = (SFunction) unknownObj;
+			return func.apply(param);
+		} else {
+			return null;
+		}
+	}
 	@Override
 	public String toString() {
 		if (0 == children.size()) {

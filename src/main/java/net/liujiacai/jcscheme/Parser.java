@@ -2,8 +2,8 @@ package net.liujiacai.jcscheme;
 
 public class Parser {
 	public static String[] tokenize(String src) {
-		src = src.replaceAll("\\(", "( ").replaceAll("\\)", " )");
-		String[] tokens = src.split("\\s+");
+		src = src.replaceAll("\\(", " ( ").replaceAll("\\)", " ) ");
+		String[] tokens = src.trim().split("\\s+");
 		return tokens;
 	}
 

@@ -17,7 +17,7 @@ public class SNumber extends SObject{
 	}
 	
 
-	// 以下为该类型提供的内置函数
+	// func below used for builtins via reflection
 	public static SObject add(SObject... args) {
 		int sum = 0;
 		for (SObject a : args) {

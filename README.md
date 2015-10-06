@@ -1,18 +1,30 @@
 ## JCScheme
 
-学习编程这么多年来，终于有了我自己的 Scheme 方言
+After programming so many years, I finally write my own language !
 
 ```
 JCScheme = Jiacai's Scheme 😊
 ```
+## Concepts
+
+JCScheme use [S-expression](https://en.wikipedia.org/wiki/S-expression) internally to represent [AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree) like any other Scheme. 
+[SExpression.java](src/main/java/net/liujiacai/jcscheme/SExpression.java) is the implementation of `S-expression`, which is the core part of JCScheme.
+   
+FYI, diagram below is the `S-expression` of `(+ 1 2 (* 3 4))` expressed inside `SExpression.java`.
+![AST_demo](https://img.alicdn.com/imgextra/i3/581166664/TB2OftZfVXXXXbTXpXXXXXXXXXX_!!581166664.png)
+
+More explanations can be found in my Chinese blog [《我的第一个玩具语言 JCScheme 问世了》](http://liujiacai.net/blog/2015/10/03/first-toy-scheme/)。
 
 
-## 运行
-
-clone 本项目后直接`mvn clean package`即可生成jar包。
-
-由于本项目的重点是实现解释器部分，所以 REPL 做的有些搓，方向键不能使用，Linux/Mac 用户可以安装`rlwrap`解决。下面命令参考：
+## Install
+```shell
+git clone git@github.com:jiacai2050/JCScheme.git
+cd JCScheme; mvn clean package
+java -jar target/JCScheme-*.jar
 ```
+
+You can install `rlwrap` to support line editing, persistent history and completion.
+```shell
 # ubuntu
 sudo apt-get install rlwrap
 # centos 
@@ -21,10 +33,20 @@ sudo yum install rlwrap
 brew install rlwrap  # for Homebrew
 port install rlwrap  # for MacPorts
 ```
-
-然后就可以运行 JCScheme 了。
-目前支持整型、布尔型、函数三种类型，支持`if`、`def`与`lambda`关键字，更多功能参考 [ChangeLog](#ChangeLog)。
+Then, run JCScheme like this
+```shell
+rlwrap java -jar target/JCScheme-*.jar
 ```
+
+## Syntax 
+
+The very first version of JCScheme support:
+1. datatype: Number, Bool, Function
+2. keyword: `if`, `def`, `lambda`
+3. literal: `true`, `false`
+
+More new features can be found at [Change Log](#ChangeLog)。
+```shell
 rlwrap java -jar target/JCScheme-*.jar
 >> (* 2 3 4 5)
 120
@@ -41,16 +63,12 @@ null
 >> c
 5
 ```
-## 说明
 
-JCScheme 的解释可以参考我的博文[我的第一个玩具语言 JCScheme 问世了](http://liujiacai.net/blog/2015/10/03/first-toy-scheme/)。
+## ChangeLog
 
-如果你有什么好的想法或建议，欢迎 PR。
-
-## <a name="ChangeLog"/>ChangeLog
-
-- 0.0.1-SNAPSHAT，2015/10/03
-- 0.0.2-SNAPSHAT，2015/10/04，增加匿名函数调用
+- 0.0.1-SNAPSHAT, 2015/10/03
+- 0.0.2-SNAPSHAT, 2015/10/04
+  1. support [immediately invoked function](https://en.wikipedia.org/wiki/Immediately-invoked_function_expression)
 ```
 >> ((lambda (a b) (if (> a b) a b)) 3 4)
 4
@@ -59,7 +77,11 @@ Function :
 	Args : [a, b]
 	Body : ( if ( > a b )  a b )
 ```
-- 0.0.3-SNAPSHAT，2015/10/05，增加序对(pair)、表(list)类型；增加`cons`、`list`关键字；增加`car`、`cdr`、`empty?`内置函数；增加`nil`字面量，用以表示空表
+- 0.0.3-SNAPSHAT, 2015/10/05 
+  1. new datatype: `pair` and `list`
+  2. new keyword: `cons`、`list`
+  3. new builtin function: `car`、`cdr`、`empty?`
+  4. a new literal: `nil`, which stands for empty list
 ```
 >> (cons 1 2)
 [1, 2]
@@ -67,13 +89,13 @@ Function :
 1
 >> (cdr (cons 1 2))
 2
->> (list) # 与字面量 nil 等价
+>> (list) # identical to nil
 nil   
 >> (list 1 2)
 (1, 2)
 >> (car (list 1 2))
 1
->> (cdr (list 1 2)) # 注意与 (cdr (cons 1 2)) 的区别
+>> (cdr (list 1 2)) #  aware of the difference between this and (cdr (cons 1 2))
 (2)
 >> (empty? (cdr (list 1 2)))
 false
@@ -83,6 +105,40 @@ true
 true
 >> (cons 1 nil)
 (1)
->> (list 1)  # 与 (cons 1 nil) 等价
+>> (list 1)  # identical to (cons 1 nil)
 (1)
 ```
+- 0.0.4-SNAPSHAT, 2015/10/06
+  1. support [closure](https://en.wikipedia.org/wiki/Closure_%28computer_programming%29) 
+  1. support [currying](https://en.wikipedia.org/wiki/Currying)
+  2. support function scope
+```shell
+# closure demo
+>> (def adder (lambda (x) (lambda (y) (+ x y))))
+null
+>> (def add2 (adder 2))
+null
+>> (add2 3)
+5
+# currying demo
+>> (def myadd (lambda (x y) (+ x y)))
+null
+>> (myadd 3)
+Function :
+        Args : [y]
+        Body : [( + x y ) ]
+>> ( (myadd 3) 4)
+7
+# function scope demo
+>> (lambda () (def a 1) a)
+Function :
+        Args : []
+        Body : [( def a 1 ) , a]
+>> ((lambda () (def a 1) a))
+1
+>> a    # variable a isn't in global scope
+Error token: a
+```  
+  
+## License
+[MIT License](LICENSE) © Jiacai Liu

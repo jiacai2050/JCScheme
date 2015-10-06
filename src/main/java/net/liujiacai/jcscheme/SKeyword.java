@@ -10,11 +10,12 @@ import net.liujiacai.jcscheme.type.SNil;
 import net.liujiacai.jcscheme.type.SObject;
 import net.liujiacai.jcscheme.type.SPair;
 
+/**
+ * Functions in this class is used for builtin keywords via reflection
+ *
+ */
 public class SKeyword {
-	/**
-	 * JCScheme 中关键字的语义逻辑
-	 */
-
+	
 	public static SObject ifProcessor(List<SExpression> children) {
 		SBool condition = (SBool) children.get(1).eval();
 		SExpression trueClause = children.get(2);
@@ -31,25 +32,27 @@ public class SKeyword {
 	}
 
 	public static SObject defProcessor(List<SExpression> children) {
-		// def 关键字默认返回 null
+		// def always return null
 		String key = children.get(1).getValue();
-		SScope.env.put(key, children.get(2).eval());
+		SScope.current.getEnv().put(key, children.get(2).eval());
 		return null;
 	}
 
 	public static SObject lambdaProcessor(List<SExpression> children) {
 
 		SExpression funcArgsExp = children.get(1);
-		SExpression funcBodyExp = children.get(2);
+
+		List<SExpression> funcBodyExp = children
+				.subList(2, children.size() - 1);
 
 		List<SExpression> args = funcArgsExp.getChildren();
-		// SExpression 最后一个为右括号，忽略
 		args = args.subList(0, args.size() - 1);
 		List<String> params = new ArrayList<>();
 		for (SExpression e : args) {
 			params.add(e.getValue());
 		}
-		SFunction func = new SFunction(params, funcBodyExp);
+		SFunction func = new SFunction(params, funcBodyExp, new SScope(
+				SScope.current));
 		return func;
 	}
 
@@ -68,7 +71,6 @@ public class SKeyword {
 
 	public static SObject listProcessor(List<SExpression> children) {
 		List<SExpression> tuples = children.subList(1, children.size() - 1);
-		// 空表
 		if (tuples.size() == 0) {
 			return SNil.getInstance();
 		} else {

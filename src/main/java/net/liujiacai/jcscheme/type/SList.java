@@ -57,7 +57,7 @@ public class SList extends SObject {
 		SObject obj = pairs.getSecond();
 		while (obj instanceof SPair) {
 			SPair pair = (SPair) obj;
-			// 当 pair 的first、second都为null，说明已经到了最后一个节点
+			// it is the last pair now, so stop
 			if (pair.getFirst() == null && pair.getSecond() == null) {
 				break;
 			}

@@ -6,13 +6,40 @@ import java.util.Map;
 import net.liujiacai.jcscheme.type.SObject;
 
 public class SScope {
-	// 全局环境
-	public static Map<String, SObject> env = new HashMap<String, SObject>();
+	private SScope parent;
+	private Map<String, SObject> env;
 
+	public SScope getParent() {
+		return parent;
+	}
+
+	public Map<String, SObject> getEnv() {
+		return env;
+	}
+
+	public SObject findVariable(String var) {
+		if (env.containsKey(var)) {
+			return env.get(var);
+		} else {
+			SScope p = this.getParent();
+			while (p != null) {
+				Map<String, SObject> subEnv = p.getEnv();
+				if (subEnv.containsKey(var)) {
+					return subEnv.get(var);
+				}
+				p = p.getParent();
+			}
+			return null;
+		}
+	}
+
+	public static SScope current = null;
 	public static Map<String, String> builtinFuncs = new HashMap<String, String>();
 	public static Map<String, String> builtinKeywords = new HashMap<String, String>();
 
 	static {
+		current = new SScope(null);
+
 		builtinFuncs.put(Constants.ADD,
 				"net.liujiacai.jcscheme.type.SNumber.add");
 		builtinFuncs.put(Constants.SUB,
@@ -29,10 +56,10 @@ public class SScope {
 				"net.liujiacai.jcscheme.type.SBool.equalTo");
 		builtinFuncs.put(Constants.empty,
 				"net.liujiacai.jcscheme.type.SList.isEmpty");
-		builtinFuncs.put(Constants.CAR,
-				"net.liujiacai.jcscheme.type.SPair.car");
-		builtinFuncs.put(Constants.CDR,
-				"net.liujiacai.jcscheme.type.SPair.cdr");
+		builtinFuncs
+				.put(Constants.CAR, "net.liujiacai.jcscheme.type.SPair.car");
+		builtinFuncs
+				.put(Constants.CDR, "net.liujiacai.jcscheme.type.SPair.cdr");
 
 		builtinKeywords.put(Constants.IF,
 				"net.liujiacai.jcscheme.SKeyword.ifProcessor");
@@ -45,4 +72,10 @@ public class SScope {
 		builtinKeywords.put(Constants.LIST,
 				"net.liujiacai.jcscheme.SKeyword.listProcessor");
 	}
+
+	public SScope(SScope parent) {
+		this.parent = parent;
+		this.env = new HashMap<String, SObject>();
+	}
+
 }
