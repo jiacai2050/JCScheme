@@ -41,11 +41,12 @@ rlwrap java -jar target/JCScheme-*.jar
 ## Syntax 
 
 The very first version of JCScheme support:
+
 1. datatype: Number, Bool, Function
 2. keyword: `if`, `def`, `lambda`
 3. literal: `true`, `false`
 
-More new features can be found at [Change Log](#ChangeLog)。
+More new features can be found at [Change Log](#changelog)。
 ```shell
 rlwrap java -jar target/JCScheme-*.jar
 >> (* 2 3 4 5)
