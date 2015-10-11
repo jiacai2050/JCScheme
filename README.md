@@ -152,7 +152,8 @@ null
 >> (str=? a b)
 true
 >> (str=? a "hello")
-true```  
+true
+```  
   
 ## License
 [MIT License](http://liujiacai.net/license/MIT.html?year=2015) © Jiacai Liu
