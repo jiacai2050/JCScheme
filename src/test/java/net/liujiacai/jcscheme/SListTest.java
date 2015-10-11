@@ -8,61 +8,54 @@ import org.junit.Test;
 public class SListTest {
 
 	private String src;
-	private SExpression program;
 
 	@Test
 	public void testCarFor0Param() {
 		src = "(car (list))";
-		program = Parser.parse(Parser.tokenize(src));
-		Assert.assertNull(program.eval());
+		Assert.assertNull(Util4Test.parseAndEval(src));
 	}
 
 	@Test
 	public void testCarFor3Param() {
 		src = "(car (list 1 2 3))";
-		program = Parser.parse(Parser.tokenize(src));
-		Assert.assertEquals("1", program.eval().toString());
+		Assert.assertEquals("1", Util4Test.parseAndEval(src).toString());
 	}
 
 	@Test
 	public void testCdrFor0Param() {
 		src = "(cdr (list))";
-		program = Parser.parse(Parser.tokenize(src));
-		Assert.assertNull(program.eval());
+		Assert.assertNull(Util4Test.parseAndEval(src));
 	}
 
 	@Test
 	public void testCdrFor1Param() {
 		src = "(cdr (list 1))";
-		program = Parser.parse(Parser.tokenize(src));
-		Assert.assertEquals(Constants.NIL, program.eval().toString());
+		Assert.assertEquals(Constants.NIL, Util4Test.parseAndEval(src)
+				.toString());
 	}
 
 	@Test
 	public void testCdrFor3Param() {
 		src = "(cdr (list 1 2 3))";
-		program = Parser.parse(Parser.tokenize(src));
-		Assert.assertEquals("(2, 3)", program.eval().toString());
+		Assert.assertEquals("(2, 3)", Util4Test.parseAndEval(src).toString());
 	}
 
 	@Test
 	public void testEmptyFor3List() {
-		String src = "(empty? (list 1 2 3))";
-		SExpression program = Parser.parse(Parser.tokenize(src));
-		Assert.assertFalse(((SBool) program.eval()).getValue());
+		src = "(empty? (list 1 2 3))";
+		Assert.assertFalse(((SBool) Util4Test.parseAndEval(src)).getValue());
 	}
 
 	@Test
 	public void testEmptyFor0List() {
-		String src = "(empty? (list))";
-		SExpression program = Parser.parse(Parser.tokenize(src));
-		Assert.assertTrue(((SBool) program.eval()).getValue());
+		src = "(empty? (list))";
+		Assert.assertTrue(((SBool) Util4Test.parseAndEval(src)).getValue());
 	}
+
 	@Test
 	public void testEmptyForNilList() {
 		String src = "(empty? nil)";
-		SExpression program = Parser.parse(Parser.tokenize(src));
-		Assert.assertTrue(((SBool) program.eval()).getValue());
+		Assert.assertTrue(((SBool) Util4Test.parseAndEval(src)).getValue());
 	}
 
 }

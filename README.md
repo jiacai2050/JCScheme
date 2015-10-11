@@ -7,10 +7,9 @@ JCScheme = Jiacai's Scheme 😊
 ```
 ## Concepts
 
-JCScheme use [S-expression](https://en.wikipedia.org/wiki/S-expression) internally to represent [AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree) like any other Scheme. 
-[SExpression.java](src/main/java/net/liujiacai/jcscheme/SExpression.java) is the implementation of `S-expression`, which is the core part of JCScheme.
+JCScheme use [S-expression](https://en.wikipedia.org/wiki/S-expression) internally to represent [AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree) like any other Scheme. And [SExpression.java](src/main/java/net/liujiacai/jcscheme/SExpression.java) is the implementation of `S-expression`, which is the core of JCScheme.
    
-FYI, diagram below is the `S-expression` of `(+ 1 2 (* 3 4))` expressed inside `SExpression.java`.
+FYI, diagram below is the `S-expression` of `(+ 1 2 (* 3 4))` behind `SExpression.java`.
 ![AST_demo](https://img.alicdn.com/imgextra/i3/581166664/TB2OftZfVXXXXbTXpXXXXXXXXXX_!!581166664.png)
 
 More explanations can be found in my Chinese blog [《我的第一个玩具语言 JCScheme 问世了》](http://liujiacai.net/blog/2015/10/03/first-toy-scheme/)。
@@ -42,11 +41,10 @@ rlwrap java -jar target/JCScheme-*.jar
 
 The very first version of JCScheme support:
 
-1. datatype: Number, Bool, Function
+1. datatype: `int`, `bool`, `function`
 2. keyword: `if`, `def`, `lambda`
 3. literal: `true`, `false`
 
-More new features can be found at [Change Log](#changelog)。
 ```shell
 rlwrap java -jar target/JCScheme-*.jar
 >> (* 2 3 4 5)
@@ -64,6 +62,7 @@ null
 >> c
 5
 ```
+More new features can be found at [Change Log](#changelog) below。
 
 ## ChangeLog
 
@@ -140,6 +139,20 @@ Function :
 >> a    # variable a isn't in global scope
 Error token: a
 ```  
+- 0.0.5-SNAPSHAT, 2015/10/11
+  1. new datatype: `string`
+  1. new builtin function `str=?`, used for test equality of two string
+```shell
+>> "abc"
+"abc"
+>> (def a "hello")
+null
+>> (def b "hello")
+null
+>> (str=? a b)
+true
+>> (str=? a "hello")
+true```  
   
 ## License
-[MIT License](LICENSE) © Jiacai Liu
+[MIT License](http://liujiacai.net/license/MIT.html?year=2015) © Jiacai Liu

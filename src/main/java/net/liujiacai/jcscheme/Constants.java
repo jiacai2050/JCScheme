@@ -17,7 +17,8 @@ public class Constants {
 	public static final String GT = ">";
 	public static final String LT = "<";
 	public static final String EQ = "=";
-	public static final String empty = "empty?";
+	public static final String EMPTY = "empty?";
+	public static final String STR_EQ = "str=?";
 
 	// internal keywords
 	public static final String DEF = "def";

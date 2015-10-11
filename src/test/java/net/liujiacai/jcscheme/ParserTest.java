@@ -13,7 +13,6 @@ public class ParserTest {
 	@Test
 	public void testTokenize() {
 		src = "(list 1 2)";
-		System.out.println();
 
 		Assert.assertEquals("[(, list, 1, 2, )]",
 				Arrays.toString(Parser.tokenize(src)));

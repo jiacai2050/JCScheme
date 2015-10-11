@@ -8,6 +8,7 @@ import net.liujiacai.jcscheme.type.SFunction;
 import net.liujiacai.jcscheme.type.SNil;
 import net.liujiacai.jcscheme.type.SNumber;
 import net.liujiacai.jcscheme.type.SObject;
+import net.liujiacai.jcscheme.type.SString;
 
 public class SExpression {
 	private String value;
@@ -53,7 +54,9 @@ public class SExpression {
 				return new SBool(Boolean.valueOf(this.value));
 			} else if (this.value.equals(Constants.NIL)) {
 				return SNil.getInstance();
-			} else {
+			}  else if (this.value.startsWith("\"")) {
+				return new SString(this.value);
+			}else {
 				SObject obj = SScope.current.findVariable(this.value);
 				if(null != obj ) {
 					return obj;

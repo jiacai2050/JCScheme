@@ -54,12 +54,14 @@ public class SScope {
 				"net.liujiacai.jcscheme.type.SBool.lessThan");
 		builtinFuncs.put(Constants.EQ,
 				"net.liujiacai.jcscheme.type.SBool.equalTo");
-		builtinFuncs.put(Constants.empty,
+		builtinFuncs.put(Constants.EMPTY,
 				"net.liujiacai.jcscheme.type.SList.isEmpty");
 		builtinFuncs
 				.put(Constants.CAR, "net.liujiacai.jcscheme.type.SPair.car");
 		builtinFuncs
 				.put(Constants.CDR, "net.liujiacai.jcscheme.type.SPair.cdr");
+		builtinFuncs
+				.put(Constants.STR_EQ, "net.liujiacai.jcscheme.type.SString.eq");
 
 		builtinKeywords.put(Constants.IF,
 				"net.liujiacai.jcscheme.SKeyword.ifProcessor");
