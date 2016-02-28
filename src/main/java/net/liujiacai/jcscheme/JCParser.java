@@ -1,23 +1,31 @@
 package net.liujiacai.jcscheme;
 
-public class Parser {
+import net.liujiacai.jcscheme.util.JCConstants;
+
+public class JCParser {
 	public static String[] tokenize(String src) {
 		src = src.replaceAll("\\(", " ( ").replaceAll("\\)", " ) ");
 		String[] tokens = src.trim().split("\\s+");
 		return tokens;
 	}
 
-	public static SExpression parse(String[] tokens) {
-		SExpression root = new SExpression("", null);
-		SExpression parent = root;
+	public static JCExpression parse(String[] tokens) {
+
+		JCExpression parent = null;
+		JCExpression root = null;
 		for (String token : tokens) {
-			SExpression newNode = new SExpression(token, parent);
-			parent.addChild(newNode);
+			JCExpression newNode = new JCExpression(token, parent);
+            if ( root == null ) {
+                root = newNode;
+            } else {
+                parent.addChild(newNode);
+            }
+
 			switch (token) {
-			case Constants.START_TOKEN:
+			case JCConstants.START_TOKEN:
 				parent = newNode;
 				break;
-			case Constants.END_TOKEN:
+			case JCConstants.END_TOKEN:
 				parent = parent.getParent();
 				break;
 			default:
@@ -26,7 +34,7 @@ public class Parser {
 		return root;
 	}
 
-	public static void prettyPrint(SExpression exps) {
+	public static void prettyPrint(JCExpression exps) {
 		StringBuffer buffer = new StringBuffer();
 		iter(0, exps, buffer);
 		System.out.println(buffer.toString());
@@ -40,16 +48,16 @@ public class Parser {
 		return blank;
 	}
 
-	private static void iter(int indentLevel, SExpression exp,
+	private static void iter(int indentLevel, JCExpression exp,
 			StringBuffer buffer) {
 		String body = exp.getValue();
 		String padding = "";
 		switch (exp.getValue()) {
-		case Constants.START_TOKEN:
+		case JCConstants.START_TOKEN:
 			padding = fillBlanks(indentLevel);
 			indentLevel++;
 			break;
-		case Constants.END_TOKEN:
+		case JCConstants.END_TOKEN:
 			indentLevel--;
 			padding = fillBlanks(indentLevel);
 			break;
@@ -58,7 +66,7 @@ public class Parser {
 			break;
 		}
 		buffer.append(padding + body + "\n");
-		for (SExpression child : exp.getChildren()) {
+		for (JCExpression child : exp.getChildren()) {
 			iter(indentLevel, child, buffer);
 		}
 	}

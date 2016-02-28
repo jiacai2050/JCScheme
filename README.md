@@ -1,6 +1,6 @@
 ## JCScheme
 
-After programming so many years, I finally write my own language !
+The very first toy language I wrote for studying the essence of programing language.
 
 ```
 JCScheme = Jiacai's Scheme 😊
@@ -8,9 +8,9 @@ JCScheme = Jiacai's Scheme 😊
 ## Concepts
 
 JCScheme use [S-expression](https://en.wikipedia.org/wiki/S-expression) internally to represent [AST](https://en.wikipedia.org/wiki/Abstract_syntax_tree) like any other Scheme. And [SExpression.java](src/main/java/net/liujiacai/jcscheme/SExpression.java) is the implementation of `S-expression`, which is the core of JCScheme.
-   
+
 FYI, diagram below is the `S-expression` of `(+ 1 2 (* 3 4))` behind `SExpression.java`.
-![AST_demo](https://img.alicdn.com/imgextra/i3/581166664/TB2OftZfVXXXXbTXpXXXXXXXXXX_!!581166664.png)
+![AST_demo](https://img.alicdn.com/imgextra/i1/581166664/TB2GS3CkFXXXXayXpXXXXXXXXXX_!!581166664.png)
 
 More explanations can be found in my Chinese blog [《我的第一个玩具语言 JCScheme 问世了》](http://liujiacai.net/blog/2015/10/03/first-toy-scheme/)。
 
@@ -26,7 +26,7 @@ You can install `rlwrap` to support line editing, persistent history and complet
 ```shell
 # ubuntu
 sudo apt-get install rlwrap
-# centos 
+# centos
 sudo yum install rlwrap
 # Mac
 brew install rlwrap  # for Homebrew
@@ -37,123 +37,27 @@ Then, run JCScheme like this
 rlwrap java -jar target/JCScheme-*.jar
 ```
 
-## Syntax 
+## Syntax
 
-The very first version of JCScheme support:
+1. datatype
+    - `number`
+    - `bool`
+    - `string`
+    - `pair`
+    - `list`
+    - `function`
+2. builtin keywords
+    - `if`
+    - `def`
+    - `lambda`
+3. builtin functions
+    - `bool`: `and`、 `or`、 `not`
+    - `number`: `+`、 `-`、 `*`、 `/`、 `>`、 `<`、 `=`
+    - `pair/list`: `cons`、 `car`、 `cdr`、 `list`、 `null?`
+    - `string`: `str=?`、
+    - `other`: `print`
 
-1. datatype: `int`, `bool`, `function`
-2. keyword: `if`, `def`, `lambda`
-3. literal: `true`, `false`
+Code snippets can be found in [ChangeLog](ChangeLog.md)
 
-```shell
-rlwrap java -jar target/JCScheme-*.jar
->> (* 2 3 4 5)
-120
->> (def a 4)
-null
->> (def b 5)
-null
->> (if (> a b) a b)
-5
->> (def max (lambda (a b) (if (> a b) a b)))
-null
->> (def c (max a b))
-null
->> c
-5
-```
-More new features can be found at [Change Log](#changelog) below。
-
-## ChangeLog
-
-- 0.0.1-SNAPSHAT, 2015/10/03
-- 0.0.2-SNAPSHAT, 2015/10/04
-  1. support [immediately invoked function](https://en.wikipedia.org/wiki/Immediately-invoked_function_expression)
-```
->> ((lambda (a b) (if (> a b) a b)) 3 4)
-4
->> (lambda (a b) (if (> a b) a b))
-Function :
-	Args : [a, b]
-	Body : ( if ( > a b )  a b )
-```
-- 0.0.3-SNAPSHAT, 2015/10/05 
-  1. new datatype: `pair` and `list`
-  2. new keyword: `cons`、`list`
-  3. new builtin function: `car`、`cdr`、`empty?`
-  4. a new literal: `nil`, which stands for empty list
-```
->> (cons 1 2)
-[1, 2]
->> (car (cons 1 2))
-1
->> (cdr (cons 1 2))
-2
->> (list) # identical to nil
-nil   
->> (list 1 2)
-(1, 2)
->> (car (list 1 2))
-1
->> (cdr (list 1 2)) #  aware of the difference between this and (cdr (cons 1 2))
-(2)
->> (empty? (cdr (list 1 2)))
-false
->> (empty? (cdr (cdr (list 1 2))))
-true
->> (empty? nil)
-true
->> (cons 1 nil)
-(1)
->> (list 1)  # identical to (cons 1 nil)
-(1)
-```
-- 0.0.4-SNAPSHAT, 2015/10/06
-  1. support [closure](https://en.wikipedia.org/wiki/Closure_%28computer_programming%29) 
-  1. support [currying](https://en.wikipedia.org/wiki/Currying)
-  2. support function scope
-```shell
-# closure demo
->> (def adder (lambda (x) (lambda (y) (+ x y))))
-null
->> (def add2 (adder 2))
-null
->> (add2 3)
-5
-# currying demo
->> (def myadd (lambda (x y) (+ x y)))
-null
->> (myadd 3)
-Function :
-        Args : [y]
-        Body : [( + x y ) ]
->> ( (myadd 3) 4)
-7
-# function scope demo
->> (lambda () (def a 1) a)
-Function :
-        Args : []
-        Body : [( def a 1 ) , a]
->> ((lambda () (def a 1) a))
-1
->> a    # variable a isn't in global scope
-Error token: a
-```  
-- 0.0.5-SNAPSHAT, 2015/10/11
-  1. new datatype: `string`
-  1. new builtin function `str=?`, used for test equality of two string
-```shell
->> "abc"
-"abc"
->> (def a "hello")
-null
->> (def b "hello")
-null
->> (str=? a b)
-true
->> (str=? a "hello")
-true
-```  
-  
 ## License
 [MIT License](http://liujiacai.net/license/MIT.html?year=2015) © Jiacai Liu

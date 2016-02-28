@@ -1,51 +1,47 @@
 package net.liujiacai.jcscheme.type;
 
+import net.liujiacai.jcscheme.JCExpression;
+import net.liujiacai.jcscheme.JCEnvironment;
+
 import java.util.Arrays;
 import java.util.List;
 
-import net.liujiacai.jcscheme.SExpression;
-import net.liujiacai.jcscheme.SScope;
-
-public class SFunction extends SObject {
+public class JCFunction extends JCObject {
 
 	private List<String> param;
-	private List<SExpression> body;
-	private SScope scope;
+	private List<JCExpression> body;
+	private JCEnvironment env;
 
 	public List<String> getParam() {
 		return param;
 	}
 
-	public SFunction(List<String> param, List<SExpression> body, SScope scope) {
+	public JCFunction(List<String> param, List<JCExpression> body, JCEnvironment env) {
 		this.param = param;
 		this.body = body;
-		this.scope = scope;
+		this.env = env;
 	}
 
-	public SObject apply(SObject... args) {
-		SScope originScope = SScope.current;
-		// create new scope based on scope when define this function,
+	public JCObject apply(JCObject... args) {
+
+		// create new env based on the env when define this function,
 		// which accounts for JCScheme as a lexical-scoped language
-		SScope funcScope = new SScope(this.scope);
-		SScope.current = funcScope;
-		SObject ret = null;
+		JCEnvironment currentEnv = new JCEnvironment(this.env);
+
 		for (int i = 0; i < args.length; i++) {
-			SScope.current.getEnv().put(param.get(i), args[i]);
+			currentEnv.addVariable(param.get(i), args[i]);
 		}
 		if (args.length < param.size()) {
 			List<String> subParam = param.subList(args.length, param.size());
-			ret = new SFunction(subParam, body, funcScope);
+			return new JCFunction(subParam, body, currentEnv);
 		} else {
 			int bodySize = body.size();
 			for (int i = 0; i < bodySize - 1; i++) {
-				body.get(i).eval();
+				body.get(i).eval(currentEnv);
 			}
 			// only return last exp
-			ret = body.get(bodySize - 1).eval();
+			return body.get(bodySize - 1).eval(currentEnv);
 		}
-		// GC will clean unused scope 
-		SScope.current = originScope;
-		return ret;
 	}
 
 	@Override

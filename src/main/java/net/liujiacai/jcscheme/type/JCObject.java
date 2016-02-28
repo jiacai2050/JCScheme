@@ -1,5 +1,5 @@
 package net.liujiacai.jcscheme.type;
 
-public abstract class SObject {
+public abstract class JCObject {
 
 }

@@ -1,9 +1,9 @@
 package net.liujiacai.jcscheme;
 
-import net.liujiacai.jcscheme.type.SObject;
+import net.liujiacai.jcscheme.type.JCObject;
 
 public class Util4Test {
-	public static SObject parseAndEval(String src) {
-		return Parser.parse(Parser.tokenize(src)).eval();
-	}
+    public static JCObject parseAndEval(String src, JCEnvironment env) {
+        return JCParser.parse(JCParser.tokenize(src)).eval(env);
+    }
 }
