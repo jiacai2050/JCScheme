@@ -35,4 +35,45 @@ public class JCBoolTest {
         Assert.assertTrue(((JCBool) Util4Test.parseAndEval(src, rootEnv)).getValue());
     }
 
+    @Test
+    public void shouldReturnTrueGivenAndTrueTrue() {
+        src = "(and true true)";
+        Assert.assertTrue(((JCBool) Util4Test.parseAndEval(src, rootEnv)).getValue());
+    }
+
+
+    @Test
+    public void shouldReturnFalseGivenAndTrueFalse() {
+        src = "(and true false)";
+        Assert.assertFalse(((JCBool) Util4Test.parseAndEval(src, rootEnv)).getValue());
+    }
+
+
+    @Test
+    public void shouldReturnTrueGivenOrFalseTrue() {
+        src = "(or false true)";
+        Assert.assertTrue(((JCBool) Util4Test.parseAndEval(src, rootEnv)).getValue());
+    }
+
+
+    @Test
+    public void shouldReturnFalseGivenOrFalseFalse() {
+        src = "(or false false)";
+        Assert.assertFalse(((JCBool) Util4Test.parseAndEval(src, rootEnv)).getValue());
+    }
+
+
+    @Test
+    public void shouldReturnTrueGivenNotFalse() {
+        src = "(not false)";
+        Assert.assertTrue(((JCBool) Util4Test.parseAndEval(src, rootEnv)).getValue());
+    }
+
+
+    @Test
+    public void shouldReturnFalseGivenTrue() {
+        src = "(not true)";
+        Assert.assertFalse(((JCBool) Util4Test.parseAndEval(src, rootEnv)).getValue());
+    }
+
 }
