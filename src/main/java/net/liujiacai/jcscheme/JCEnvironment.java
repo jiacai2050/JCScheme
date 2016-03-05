@@ -1,29 +1,27 @@
 package net.liujiacai.jcscheme;
 
-import net.liujiacai.jcscheme.type.JCObject;
-
 import java.util.HashMap;
 import java.util.Map;
 
 public class JCEnvironment {
 	private JCEnvironment parent;
-	private Map<String, JCObject> env;
+	private Map<String, JCTruck> env;
 
 	public JCEnvironment getParent() {
 		return parent;
 	}
 
-	public Map<String, JCObject> getEnv() {
+	public Map<String, JCTruck> getEnv() {
 		return env;
 	}
 
-	public JCObject findVariable(String var) {
+	public JCTruck findVariable(String var) {
 		if (env.containsKey(var)) {
 			return env.get(var);
 		} else {
 			JCEnvironment p = this.getParent();
 			while (p != null) {
-				Map<String, JCObject> subEnv = p.getEnv();
+				Map<String, JCTruck> subEnv = p.getEnv();
 				if (subEnv.containsKey(var)) {
 					return subEnv.get(var);
 				}
@@ -33,13 +31,13 @@ public class JCEnvironment {
 		}
 	}
 
-	public void addVariable(String var, JCObject val) {
+	public void addVariable(String var, JCTruck val) {
         getEnv().put(var, val);
     }
 
 	public JCEnvironment(JCEnvironment parent) {
 		this.parent = parent;
-		this.env = new HashMap<String, JCObject>();
+		this.env = new HashMap<String, JCTruck>();
 	}
 
 }

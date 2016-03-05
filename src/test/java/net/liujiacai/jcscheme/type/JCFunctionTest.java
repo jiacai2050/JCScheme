@@ -34,7 +34,7 @@ public class JCFunctionTest {
 		src = "(def adder (lambda (x) (lambda (y) (+ x y))))";
 		Util4Test.parseAndEval(src, rootEnv);
 
-		List<String> paramList = ((JCFunction) rootEnv.findVariable("adder")).getParam();
+		List<String> paramList = ((JCFunction) rootEnv.findVariable("adder").getRealValue()).getParam();
 		Assert.assertArrayEquals(new String[] { "x" },
 				paramList.toArray(new String[paramList.size()]));
 	}

@@ -2,6 +2,7 @@ package net.liujiacai.jcscheme.type;
 
 import net.liujiacai.jcscheme.JCExpression;
 import net.liujiacai.jcscheme.JCEnvironment;
+import net.liujiacai.jcscheme.JCTruck;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,7 +23,7 @@ public class JCFunction extends JCObject {
 		this.env = env;
 	}
 
-	public JCObject apply(JCObject... args) {
+	public JCObject apply(JCTruck... args) {
 
 		// create new env based on the env when define this function,
 		// which accounts for JCScheme as a lexical-scoped language

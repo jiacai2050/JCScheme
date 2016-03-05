@@ -1,18 +1,19 @@
 package net.liujiacai.jcscheme.builtin;
 
-import net.liujiacai.jcscheme.util.JCConstants;
+import net.liujiacai.jcscheme.JCTruck;
 import net.liujiacai.jcscheme.exception.IllegalExpressionException;
 import net.liujiacai.jcscheme.exception.WrongNumberArgsException;
 import net.liujiacai.jcscheme.type.JCList;
 import net.liujiacai.jcscheme.type.JCObject;
 import net.liujiacai.jcscheme.type.JCPair;
+import net.liujiacai.jcscheme.util.JCConstants;
 
 public class JCPairFuncs {
 
-    public static JCPair cons(JCObject... args) {
+    public static JCPair cons(JCTruck... args) {
         if (args.length == 2) {
-            JCObject fir = args[0];
-            JCObject sec = args[1];
+            JCObject fir = args[0].getRealValue();
+            JCObject sec = args[1].getRealValue();
             if (sec instanceof JCList) {
                 return new JCList(fir, sec);
             } else {
@@ -33,7 +34,7 @@ public class JCPairFuncs {
 
     }
 
-    public static JCObject car(JCObject... args) {
+    public static JCObject car(JCTruck... args) {
         if (args.length != 1) {
             try {
                 throw new WrongNumberArgsException(JCConstants.CAR, 1, args.length);
@@ -44,14 +45,14 @@ public class JCPairFuncs {
                 return null;
             }
         } else {
-            JCPair pair = (JCPair) args[0];
+            JCPair pair = (JCPair) args[0].getRealValue();
             return pair.getFirst();
         }
 
 
     }
 
-    public static JCObject cdr(JCObject... args) {
+    public static JCObject cdr(JCTruck... args) {
         if (args.length != 1) {
             try {
                 throw new WrongNumberArgsException(JCConstants.CDR, 1, args.length);
@@ -62,7 +63,7 @@ public class JCPairFuncs {
                 return null;
             }
         } else {
-            JCPair pair = (JCPair) args[0];
+            JCPair pair = (JCPair) args[0].getRealValue();
             return pair.getSecond();
         }
 

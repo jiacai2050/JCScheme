@@ -2,6 +2,7 @@ package net.liujiacai.jcscheme.util;
 
 import net.liujiacai.jcscheme.JCEnvironment;
 import net.liujiacai.jcscheme.JCExpression;
+import net.liujiacai.jcscheme.JCTruck;
 import net.liujiacai.jcscheme.exception.IllegalExpressionException;
 import net.liujiacai.jcscheme.keyword.Define;
 import net.liujiacai.jcscheme.keyword.If;
@@ -33,9 +34,9 @@ public class ApplyUtil {
         }  else if (unknownVal.startsWith("\"")) {
             return new JCString(unknownVal);
         }else {
-            JCObject obj = env.findVariable(unknownVal);
+            JCTruck obj = env.findVariable(unknownVal);
             if(null != obj ) {
-                return obj;
+                return obj.getRealValue();
             } else {
                 System.err.println("Error token: " + unknownVal);
                 return null;
@@ -56,7 +57,7 @@ public class ApplyUtil {
 	}
 
     public static JCObject functionApply(String operator, JCExpression exp, JCEnvironment env) {
-        JCObject[] paramObjs = extractFuncParams(exp, env);
+        JCTruck[] paramObjs = extractFuncParams(exp, env);
         // 2.1  builtin functions
         if (EnvUtil.builtinFuncs.containsKey(operator)) {
             String func = EnvUtil.builtinFuncs.get(operator);
@@ -66,7 +67,7 @@ public class ApplyUtil {
             return callAnonymousFunc(exp, paramObjs, env);
         } else {
             // 2.3  user-defined functions
-            JCFunction func = (JCFunction) env.findVariable(operator);
+            JCFunction func = (JCFunction) env.findVariable(operator).getRealValue();
             if(null != func) {
                 return func.apply(paramObjs);
             } else {
@@ -82,19 +83,19 @@ public class ApplyUtil {
         }
 
     }
-    private static JCObject[] extractFuncParams(JCExpression exp, JCEnvironment env) {
+    private static JCTruck[] extractFuncParams(JCExpression exp, JCEnvironment env) {
         List<JCExpression> children = exp.getChildren();
 
         int length = children.size();
         List<JCExpression> paramExps = children.subList(1, length - 1);
-        JCObject[] paramObjs = new JCObject[paramExps.size()];
+        JCTruck[] paramObjs = new JCTruck[paramExps.size()];
         int argsIndex = 0;
         for (JCExpression argExp : paramExps) {
-            paramObjs[argsIndex ++] = argExp.eval(env);
+            paramObjs[argsIndex ++] = new JCTruck(argExp, env);
         }
         return paramObjs;
     }
-    private static JCObject callAnonymousFunc(JCExpression exp, JCObject[] param, JCEnvironment env) {
+    private static JCObject callAnonymousFunc(JCExpression exp, JCTruck[] param, JCEnvironment env) {
         /**
          * There are 2 cases:
          * 1. immediately-invoked function:
@@ -113,14 +114,14 @@ public class ApplyUtil {
         }
     }
 
-    private static JCObject builtinFuncExecutor(String fullnameFunc, JCObject... args) {
+    private static JCObject builtinFuncExecutor(String fullnameFunc, JCTruck... args) {
         int seperatorIndex = fullnameFunc.lastIndexOf(".");
         String funcClass = fullnameFunc.substring(0, seperatorIndex);
         String funcName = fullnameFunc.substring(seperatorIndex + 1,
                 fullnameFunc.length());
         try {
             Class<?> clazz = Class.forName(funcClass);
-            Method method = clazz.getMethod(funcName, JCObject[].class);
+            Method method = clazz.getMethod(funcName, JCTruck[].class);
             return ((JCObject) method.invoke(null, new Object[] { args }));
 
         } catch (ClassNotFoundException e) {
