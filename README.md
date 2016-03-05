@@ -68,7 +68,7 @@ Code snippets can be found in [ChangeLog](ChangeLog.md)
 
 ## TODO
 
-- [x] function application using [normal order](https://en.wikipedia.org/wiki/Evaluation_strategy#Normal_order) (2016-03-05)
+- [x] function application using [normal order](https://en.wikipedia.org/wiki/Evaluation_strategy#Normal_order). Done at 2016-03-05, details can be found at [this branch](https://github.com/jiacai2050/JCScheme/tree/normal-order)
 
 ## License
 [MIT License](http://liujiacai.net/license/MIT.html?year=2015) © Jiacai Liu
