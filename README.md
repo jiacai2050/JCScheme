@@ -11,7 +11,7 @@ You can use following code snippets to test:
 0
 ```
 
-The result of `(test 0 (p))` behaves different regarding to evaluation strategy
+The result of `(test 0 (p))` behaves differently regarding to evaluation strategy
 
 - `normal order` will return `0`
 - `applicative order` will cause dead loop
@@ -19,7 +19,7 @@ The result of `(test 0 (p))` behaves different regarding to evaluation strategy
 
 ## Main difference from master branch
 
-Instead of directly evaluating arguments when apply a function or define a variable, JCScheme wraps arguments in [JCTrunk](https://github.com/jiacai2050/JCScheme/tree/normal-order/src/main/java/net/liujiacai/jcscheme/JCTrunk.java) and only evaluates arguments as needed.
+Instead of directly evaluating arguments when apply a function or define a variable, JCScheme wraps arguments in [JCTrunk](https://github.com/jiacai2050/JCScheme/blob/normal-order/src/main/java/net/liujiacai/jcscheme/JCTruck.java) and only evaluates arguments as needed.
 
 ## License
 [MIT License](http://liujiacai.net/license/MIT.html?year=2015) © Jiacai Liu
